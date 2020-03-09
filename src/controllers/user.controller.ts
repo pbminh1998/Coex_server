@@ -31,6 +31,8 @@ import { SecurityBindings, securityId, UserProfile } from '@loopback/security';
 import { OPERATION_SECURITY_SPEC } from '../ultils/security-spec';
 import { PasswordHasherBindings, TokenServiceBindings, UserServiceBindings } from '../services/key';
 import resetPassword from '../services/mail'
+import { authorize } from '@loopback/authorization';
+import { basicAuthorization } from '../services/basic.authorizor';
 
 
 export class UserController {
@@ -273,6 +275,11 @@ export class UserController {
     return { token };
   }
 
+  @authenticate('jwt')
+  @authorize({
+    allowedRoles: ['Admin'],
+    voters: [basicAuthorization],
+  })
   @get('/users/{id}', {
     responses: {
       '200': {

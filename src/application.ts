@@ -10,6 +10,7 @@ import { ServiceMixin } from '@loopback/service-proxy';
 import path from 'path';
 import { MySequence } from './sequence';
 import { AuthenticationComponent, registerAuthenticationStrategy } from '@loopback/authentication';
+import { AuthorizationComponent } from '@loopback/authorization';
 import { JWTAuthenticationStrategy } from './services/JwtAuthenticationStrategy';
 import { MyAuthenticationSequence } from './services/sequence';
 import { TokenServiceBindings, TokenServiceConstants, PasswordHasherBindings, UserServiceBindings } from './services/key';
@@ -45,6 +46,7 @@ export class CoexApplication extends BootMixin(
       path: '/explorer',
     });
     this.component(RestExplorerComponent);
+    this.component(AuthorizationComponent);
 
     // Add auth
     this.component(AuthenticationComponent);
