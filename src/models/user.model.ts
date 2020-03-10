@@ -1,4 +1,5 @@
-import { Entity, model, property } from '@loopback/repository';
+import { Entity, model, property, hasMany } from '@loopback/repository';
+import { Room } from './room.model'
 
 @model()
 export class User extends Entity {
@@ -40,6 +41,9 @@ export class User extends Entity {
   })
   typeUser: boolean;
 
+
+  @hasMany(() => Room, { keyTo: 'userId' })
+  rooms: Room[];
 
   @property({
     type: 'array',

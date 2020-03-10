@@ -280,6 +280,7 @@ export class UserController {
     allowedRoles: ['Admin'],
     voters: [basicAuthorization],
   })
+
   @get('/users/{id}', {
     responses: {
       '200': {
@@ -297,27 +298,6 @@ export class UserController {
     @param.query.object('filter', getFilterSchemaFor(User)) filter?: Filter<User>
   ): Promise<User> {
     return this.userRepository.findById(id, filter);
-  }
-
-  @patch('/users/{id}', {
-    responses: {
-      '204': {
-        description: 'User PATCH success',
-      },
-    },
-  })
-  async updateById(
-    @param.path.string('id') id: string,
-    @requestBody({
-      content: {
-        'application/json': {
-          schema: getModelSchemaRef(User, { partial: true }),
-        },
-      },
-    })
-    user: User,
-  ): Promise<void> {
-    await this.userRepository.updateById(id, user);
   }
 
   @put('/users/{id}', {

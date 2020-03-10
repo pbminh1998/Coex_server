@@ -1,7 +1,8 @@
-import { DefaultCrudRepository } from '@loopback/repository';
-import { User, UserRelations } from '../models';
+import { DefaultCrudRepository, HasManyRepositoryFactory, repository } from '@loopback/repository';
+import { User, UserRelations, Room } from '../models';
 import { CoexdbDataSource } from '../datasources';
-import { inject } from '@loopback/core';
+import { inject, Getter } from '@loopback/core';
+import { RoomRepository } from './room.repository';
 
 export type Credentials = {
   email: string;
@@ -13,9 +14,19 @@ export class UserRepository extends DefaultCrudRepository<
   typeof User.prototype.id,
   UserRelations
   > {
+  public readonly rooms: HasManyRepositoryFactory<
+    Room,
+    typeof User.prototype.id
+  >;
   constructor(
     @inject('datasources.coexdb') dataSource: CoexdbDataSource,
+    @repository.getter('RoomRepository')
+    getRoomRepository: Getter<RoomRepository>,
   ) {
     super(User, dataSource);
+    this.rooms = this.createHasManyRepositoryFactoryFor(
+      'rooms',
+      getRoomRepository,
+    );
   }
 }
