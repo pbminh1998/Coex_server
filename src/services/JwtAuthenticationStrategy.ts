@@ -20,7 +20,8 @@ export class JWTAuthenticationStrategy implements AuthenticationStrategy {
   async authenticate(request: Request): Promise<UserProfile | undefined> {
     const token: string = this.extractCredentials(request);
     const userProfile = await this.tokenService.verifyToken(token);
-    if (!(await this.userRepository.findById(userProfile[securityId])).token.includes(token)) {
+    let user = await this.userRepository.findById(userProfile[securityId]);
+    if (!user || !user.token.includes(token)) {
       throw new HttpErrors.Unauthorized(
         `Error verifying token : jwt expired`,
       );

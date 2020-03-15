@@ -96,6 +96,34 @@ export class RoomController {
     return room;
   }
 
+  @authenticate('jwt')
+  @authorize({
+    allowedRoles: ['Admin'],
+    voters: [basicAuthorization],
+  })
+  @get('/rooms', {
+    responses: {
+      '200': {
+        description: 'Array of Room model instances',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'array',
+              items: getModelSchemaRef(Room, { includeRelations: true }),
+            },
+          },
+        },
+      },
+    },
+  })
+  async findRooms(
+    @inject(SecurityBindings.USER)
+    currentUserProfile: UserProfile,
+    @param.query.object('filter', getFilterSchemaFor(Room)) filter?: Filter<Room>,
+  ): Promise<Room[]> {
+    return await this.userRepository.rooms(currentUserProfile[securityId]).find(filter);
+  }
+
   @get('user/{id}/rooms', {
     responses: {
       '200': {
