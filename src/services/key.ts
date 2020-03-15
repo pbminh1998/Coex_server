@@ -3,6 +3,7 @@ import { BcryptHasher } from './hash.password';
 import { TokenService, UserService } from '@loopback/authentication';
 import { User } from '../models';
 import { Credentials } from '../repositories';
+const path = require('path');
 
 export namespace TokenServiceConstants {
   export const TOKEN_SECRET_VALUE = 'myjwts3cr3t';
@@ -37,4 +38,9 @@ export namespace UserServiceBindings {
 export namespace EmailConfig {
   export const user = 'coex.register@gmail.com';
   export const pass = 'bsyfxsddogqktqpd';
+}
+
+export namespace Path {
+  export const root = path.join(__dirname, '../../public/');
+  export const images = 'images';
 }

@@ -1,7 +1,11 @@
 import { Model, model, property, Entity, belongsTo } from '@loopback/repository';
-import { Room, RoomRelations } from './room.model';
+import { Room, RoomWithRelations } from './room.model';
 
-@model()
+@model({
+  settings: {
+    strictObjectIDCoercion: true,
+  }
+})
 export class StyleRoom extends Entity {
   @property({
     type: 'string',
@@ -43,7 +47,7 @@ export class StyleRoom extends Entity {
 }
 
 export interface StyleRoomRelations {
-  room?: RoomRelations;
+  room?: RoomWithRelations;
 }
 
 export type StyleRoomWithRelations = StyleRoom & StyleRoomRelations;

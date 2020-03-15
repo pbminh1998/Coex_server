@@ -28,5 +28,6 @@ export class UserRepository extends DefaultCrudRepository<
       'rooms',
       getRoomRepository,
     );
+    this.registerInclusionResolver('rooms', this.rooms.inclusionResolver);
   }
 }

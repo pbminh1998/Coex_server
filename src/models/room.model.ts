@@ -1,7 +1,7 @@
 import { Entity, model, property, hasOne, hasMany, belongsTo } from '@loopback/repository';
 import { Service } from './service.model';
-import { StyleRoom } from './style-room.model';
-import { User, UserRelations } from './user.model';
+import { StyleRoom, StyleRoomWithRelations } from './style-room.model';
+import { User, UserWithRelations } from './user.model';
 
 @model({
   settings: {
@@ -24,18 +24,6 @@ export class Room extends Entity {
 
   @property({
     type: 'string',
-    required: true,
-  })
-  address: string;
-
-  @property({
-    type: 'array',
-    itemType: 'number',
-  })
-  location?: number[];
-
-  @property({
-    type: 'string',
   })
   about?: string;
 
@@ -54,7 +42,7 @@ export class Room extends Entity {
   userId: string;
 
   @hasMany(() => StyleRoom, { keyTo: 'roomId' })
-  styleRooms: StyleRoom[];
+  styleRooms?: StyleRoom[];
 
   constructor(data?: Partial<Room>) {
     super(data);
@@ -62,7 +50,7 @@ export class Room extends Entity {
 }
 
 export interface RoomRelations {
-  user?: UserRelations;
+  user?: UserWithRelations;
 }
 
 export type RoomWithRelations = Room & RoomRelations;

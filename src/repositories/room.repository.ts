@@ -21,18 +21,20 @@ export class RoomRepository extends DefaultCrudRepository<
   constructor(
     @inject('datasources.coexdb') dataSource: CoexdbDataSource,
     @repository.getter('UserRepository')
-    userRepositoryGetter: Getter<UserRepository>,
+    protected userRepositoryGetter: Getter<UserRepository>,
     @repository.getter('StyleRoomRepository')
-    getStyleRoomRepository: Getter<StyleRoomRepository>,
+    protected styleRoomRepositoryGeter: Getter<StyleRoomRepository>,
   ) {
     super(Room, dataSource);
     this.user = this.createBelongsToAccessorFor(
       'user',
       userRepositoryGetter,
     );
+    this.registerInclusionResolver('user', this.user.inclusionResolver);
     this.styleRooms = this.createHasManyRepositoryFactoryFor(
       'styleRooms',
-      getStyleRoomRepository,
+      styleRoomRepositoryGeter,
     );
+    this.registerInclusionResolver('styleRooms', this.styleRooms.inclusionResolver);
   }
 }

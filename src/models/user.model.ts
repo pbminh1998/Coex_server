@@ -41,6 +41,17 @@ export class User extends Entity {
   })
   typeUser: boolean;
 
+  @property({
+    type: 'string',
+    required: true,
+  })
+  address: string;
+
+  @property({
+    type: 'array',
+    itemType: 'number',
+  })
+  location?: number[];
 
   @hasMany(() => Room, { keyTo: 'userId' })
   rooms: Room[];

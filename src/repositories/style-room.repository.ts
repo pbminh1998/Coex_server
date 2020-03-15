@@ -23,5 +23,6 @@ export class StyleRoomRepository extends DefaultCrudRepository<
       'room',
       roomRepositoryGetter,
     );
+    this.registerInclusionResolver('room', this.room.inclusionResolver);
   }
 }

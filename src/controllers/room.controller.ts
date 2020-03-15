@@ -16,17 +16,24 @@ import {
   put,
   del,
   requestBody,
+  Request,
+  RequestBody,
+  RestBindings,
+  Response
 } from '@loopback/rest';
 import { HttpErrors } from '@loopback/rest';
 import { authenticate, TokenService, UserService } from '@loopback/authentication';
 import { inject } from '@loopback/context';
 import { SecurityBindings, securityId, UserProfile } from '@loopback/security';
 import { OPERATION_SECURITY_SPEC } from '../ultils/security-spec';
-import { PasswordHasherBindings, TokenServiceBindings, UserServiceBindings } from '../services/key';
+import { PasswordHasherBindings, TokenServiceBindings, UserServiceBindings, Path } from '../services/key';
 import { authorize } from '@loopback/authorization';
 import { basicAuthorization } from '../services/basic.authorizor';
 import { Room } from '../models';
 import { RoomRepository, UserRepository } from '../repositories';
+import { parseRequest } from '../services/parseRequest';
+import { saveFile } from '../services/storageFile';
+
 
 export class RoomController {
   constructor(
@@ -53,28 +60,43 @@ export class RoomController {
   })
   async create(
     @requestBody({
+      description: 'Create room',
+      required: true,
       content: {
-        'application/json': {
-          schema: getModelSchemaRef(Room, {
-            title: 'NewRoom',
-            exclude: ['id'],
-          }),
+        'multipart/form-data': {
+          'x-parser': 'stream',
+          schema: {
+            type: 'object',
+            properties: {
+              room: {
+                type: 'string'
+              }
+            }
+          },
         },
       },
     })
-    room: Omit<Room, 'id'>,
+    request: Request,
     @inject(SecurityBindings.USER)
-    currentUserProfile: UserProfile
-  ): Promise<Room> {
-    return this.userRepository.rooms(currentUserProfile[securityId]).create(room);
+    currentUserProfile: UserProfile,
+    @inject(RestBindings.Http.RESPONSE) response: Response,
+  ): Promise<any> {
+    let req: any = await parseRequest(request, response);
+    if (!req.fields.room)
+      throw new HttpErrors.NotAcceptable('Please submit room');
+    const photo = await saveFile(req.files, Path.images);
+    req.fields.room = JSON.parse(req.fields.room);
+    req.fields.room.photo = photo;
+    let styleRooms: any[] = req.fields.room.styleRooms;
+    delete req.fields.room.styleRooms;
+    let room = await this.userRepository.rooms(currentUserProfile[securityId]).create(req.fields.room);
+    styleRooms.forEach(async (element) => {
+      await this.roomRepository.styleRooms(room.id).create(element);
+    });
+    return room;
   }
 
-  @authenticate('jwt')
-  @authorize({
-    allowedRoles: ['Admin'],
-    voters: [basicAuthorization],
-  })
-  @get('/rooms', {
+  @get('user/{id}/rooms', {
     responses: {
       '200': {
         description: 'Array of Room model instances',
@@ -89,9 +111,9 @@ export class RoomController {
       },
     },
   })
-  async find(@inject(SecurityBindings.USER)
-  currentUserProfile: UserProfile): Promise<Room[]> {
-    return this.userRepository.rooms(currentUserProfile[securityId]).find();
+  async find(@param.path.string('id') id: string,
+    @param.query.object('filter', getFilterSchemaFor(Room)) filter?: Filter<Room>, ): Promise<Room[]> {
+    return this.userRepository.rooms(id).find(filter);
   }
 
   @get('/rooms/{id}', {
