@@ -43,7 +43,6 @@ export class User extends Entity {
 
   @property({
     type: 'string',
-    required: true,
   })
   address: string;
 
@@ -52,6 +51,11 @@ export class User extends Entity {
     itemType: 'number',
   })
   location?: number[];
+
+  @property({
+    type: 'number',
+  })
+  distance?: number;
 
   @hasMany(() => Room, { keyTo: 'userId' })
   rooms: Room[];

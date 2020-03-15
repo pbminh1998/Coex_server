@@ -33,7 +33,7 @@ import { PasswordHasherBindings, TokenServiceBindings, UserServiceBindings } fro
 import resetPassword from '../services/mail'
 import { authorize } from '@loopback/authorization';
 import { basicAuthorization } from '../services/basic.authorizor';
-
+const loopback = require('loopback');
 
 export class UserController {
   constructor(
@@ -124,8 +124,15 @@ export class UserController {
   })
   async find(
     @param.query.object('filter', getFilterSchemaFor(User)) filter?: Filter<User>,
-  ): Promise<User[]> {
-    return this.userRepository.find(filter);
+  ): Promise<any[]> {
+    if (!filter || !filter.where) throw new HttpErrors.NotAcceptable();
+    const where: any = filter.where;
+    const location = new loopback.GeoPoint(where.location.near);
+    let users = await this.userRepository.find(filter);
+    users.forEach(element => {
+      element.distance = loopback.GeoPoint.distanceBetween(location, new loopback.GeoPoint(element.location));
+    });
+    return users;
   }
 
   @authenticate('jwt')
