@@ -130,7 +130,7 @@ export class UserController {
     const location = new loopback.GeoPoint(where.location.near);
     let users = await this.userRepository.find(filter);
     users.forEach(element => {
-      element.distance = loopback.GeoPoint.distanceBetween(location, new loopback.GeoPoint(element.location));
+      element.distance = loopback.GeoPoint.distanceBetween(location, new loopback.GeoPoint(element.location), { type: 'kilometers' });
     });
     return users;
   }
