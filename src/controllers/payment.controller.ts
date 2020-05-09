@@ -87,7 +87,7 @@ export class PaymentController {
       throw new AppResponse(400,"This booking already payment");
 
     const embeddata = {
-      redirecturl: "http://34.87.108.104:3001/payment/result",
+      redirecturl: "https://coexspace.herokuapp.com/payment/result",
       zlppaymentid: `${transaction.booking_reference}`
     };
 
