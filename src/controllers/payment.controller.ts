@@ -154,7 +154,18 @@ export class PaymentController {
   @post('payment/result', {
     responses: {
       '200': {
-        description: 'Room model instance',
+        description: 'Callback',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                returncode: {type: 'int'},
+                returnmessage: {type: 'string'},
+              },
+            },
+          },
+        },
       },
     },
   })
@@ -173,12 +184,11 @@ export class PaymentController {
         },
       },
     }) callback_data: { data: string, mac: string }
-  ): Promise<any> {
-    console.log('post');
+  ): Promise<object> {
     const reqmac = CryptoJS.HmacSHA256(callback_data.data, config.key2).toString();
     if (reqmac == callback_data.mac) {
-      console.log(JSON.parse(callback_data.data));
-      return {returnCode: 1,returnmessage: "success"};
+      await this.transactionRepository.updateById((callback_data.data as any).embeddata.transaction_id,{payment: true});
+      return {returncode: 1, returnmessage:"success"};
     } else {
       return {returnCode: -1,returnmessage: "mac not equal"};
     }
