@@ -22,7 +22,7 @@ export async function main(options: ApplicationConfig = {
   await app.boot();
   await app.start();
 
-  Schedule.agenda = new Agenda({ db: { address: `mongodb://${database.user}:${database.password}@${database.host}:${database.port}/${database.database}` } });
+  Schedule.agenda = new Agenda({ db: { address: `mongodb://${database.user + database.user!=''?':':''}${database.password + database.user!=''?'@':''}${database.host}:${database.port}/${database.database}` } });
   Schedule.agenda.on("ready", function () {
     let schedule = new Schedule(app.getSync<TransactionRepository>('repositories.TransactionRepository'), app.getSync<BookingRepository>('repositories.BookingRepository'), app.getSync<UserRepository>('repositories.UserRepository'));
     schedule.define();
