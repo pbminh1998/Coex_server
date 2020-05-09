@@ -1,0 +1,11 @@
+{
+  "name": "mongodb",
+  "connector": "mongodb",
+  "url": "",
+  "host": "ds018839.mlab.com",
+  "port": 18839,
+  "user": "root",
+  "password": "abc13579",
+  "database": "giaoviec",
+  "useNewUrlParser": true
+}
