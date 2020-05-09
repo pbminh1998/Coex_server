@@ -151,11 +151,6 @@ export class PaymentController {
       return new AppResponse(200,"This booking need payment",{code: false,key: "NEED_PAYMENT"});
   }
 
-  @authenticate('jwt')
-  @authorize({
-    allowedRoles: ['Customer'],
-    voters: [basicAuthorization],
-  })
   @post('payment/result', {
     responses: {
       '200': {
