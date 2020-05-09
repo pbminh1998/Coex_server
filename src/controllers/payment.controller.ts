@@ -90,7 +90,7 @@ export class PaymentController {
     const embeddata = {
       redirecturl: "https://coexspace.herokuapp.com/payment/result",
       callbackurl: "https://coexspace.herokuapp.com/payment/result",
-      zlppaymentid: transaction.booking_reference
+      transaction_id: transaction.id
     };
 
     const items: any = [];
@@ -187,7 +187,8 @@ export class PaymentController {
   ): Promise<object> {
     const reqmac = CryptoJS.HmacSHA256(callback_data.data, config.key2).toString();
     if (reqmac == callback_data.mac) {
-      await this.transactionRepository.updateById((callback_data.data as any).embeddata.transaction_id,{payment: true});
+      const data = JSON.parse(callback_data.data);
+      await this.transactionRepository.updateById(data.embeddata.transaction_id,{payment: true});
       return {returncode: 1, returnmessage:"success"};
     } else {
       return {returnCode: -1,returnmessage: "mac not equal"};
