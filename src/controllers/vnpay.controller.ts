@@ -32,6 +32,7 @@ import { SecurityBindings, securityId, UserProfile } from '@loopback/security';
 import { basicAuthorization } from "../services/basic.authorizor";
 import { AppResponse } from '../services/appresponse';
 import { inject } from '@loopback/context';
+import { MyDefault } from '../services/mydefault';
 
 
 export class VnpayController {
@@ -73,6 +74,9 @@ export class VnpayController {
 
     if(transaction.payment)
       throw new AppResponse(400,"This booking already payment");
+
+    if(transaction.status == MyDefault.TRANSACTION_STATUS.CANCELLED || transaction.status == MyDefault.TRANSACTION_STATUS.SUCCESS)
+      throw new AppResponse(400,"This booking cannot payment");
 
     var ipAddr = this.req.headers['x-forwarded-for'] ||
     this.req.connection.remoteAddress ||
@@ -127,7 +131,6 @@ export class VnpayController {
     }
   })
   async result(): Promise<any> {
-    console.log('return');
     var vnp_Params = this.req.query;
     var secureHash = vnp_Params['vnp_SecureHash'];
 
@@ -148,12 +151,12 @@ export class VnpayController {
     if(secureHash === checkSum){
       var rspCode = vnp_Params['vnp_ResponseCode'];
       if(rspCode == '00')
-        return 'Thanh toán thành công<br><a href="closeVnpay">Close</a>';
+        return 'Thanh toán thành công';
       else
-        return 'Thanh toán thất bại<br><a href="closeVnpay">Close</a>';
+        return 'Thanh toán thất bại';
     }
     else {
-      return {RspCode: '97', Message: 'Fail checksum'};
+      return 'Sai chữ ký';
     }
   }
 

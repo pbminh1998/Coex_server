@@ -33,6 +33,7 @@ import { basicAuthorization } from "../services/basic.authorizor";
 import { AppResponse } from '../services/appresponse';
 import { inject } from '@loopback/context';
 import { cDate } from '../services/date';
+import { MyDefault } from '../services/mydefault';
 
 const Axios = require('axios').default; // npm install axios
 const CryptoJS = require('crypto-js'); // npm install crypto-js
@@ -87,6 +88,9 @@ export class PaymentController {
     // if(await this.getBookingTransStatus(transaction))
     if(transaction.payment)
       throw new AppResponse(400,"This booking already payment");
+
+      if(transaction.status == MyDefault.TRANSACTION_STATUS.CANCELLED || transaction.status == MyDefault.TRANSACTION_STATUS.SUCCESS)
+      throw new AppResponse(400,"This booking cannot payment");
 
     const embeddata = {
       redirecturl: "https://coexspace.herokuapp.com/payment/result",

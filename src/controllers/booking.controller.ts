@@ -154,7 +154,7 @@ export class BookingController {
     let transaction = await this.transactionRepository.findById(id);
     if (transaction.userId != currentUserProfile[securityId])
       throw new AppResponse(401, 'Access denied');
-    if (transaction.status == MyDefault.TRANSACTION_STATUS.CANCELLED || transaction.status == MyDefault.TRANSACTION_STATUS.SUCCESS || transaction.check_out)
+    if (transaction.status == MyDefault.TRANSACTION_STATUS.CANCELLED || transaction.status == MyDefault.TRANSACTION_STATUS.SUCCESS || transaction.check_out || transaction.payment)
       throw new AppResponse(400, 'Cannot edit this booking');
     await this.transactionRepository.bookings(id).delete();
     transaction.update_at = new Date();
@@ -258,7 +258,7 @@ export class BookingController {
     if (!transaction.room) throw new AppResponse(400, 'Not found room', { key: 'NOT_FOUND_ROOM' });
     if (currentUserProfile[securityId] != transaction.room.coworking?.userId && currentUserProfile[securityId] != transaction.userId)
       throw new AppResponse(401, 'Access denied', { key: 'ACCESS_DENIED' });
-    if (transaction.status == MyDefault.TRANSACTION_STATUS.CANCELLED)
+    if (transaction.status == MyDefault.TRANSACTION_STATUS.CANCELLED ||transaction.payment)
       throw new AppResponse(400, 'This booking was canceled', { key: 'THIS_BOOKING_CANCELED' });
     if (transaction.check_in)
       throw new AppResponse(400, 'This booking cannot cancel', { key: 'THIS_BOOKING_CAN_NOT_CANCELED' });
