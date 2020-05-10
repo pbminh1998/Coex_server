@@ -105,8 +105,6 @@ export class VnpayController {
 
     vnp_Params = this.sortObject(vnp_Params);
 
-    console.log(vnp_Params);
-
     var querystring = require('qs');
     var signData = secretKey + querystring.stringify(vnp_Params, { encode: false });
 

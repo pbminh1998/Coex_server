@@ -102,8 +102,7 @@ export class PaymentController {
       apptime: Date.now(), // miliseconds
       item: JSON.stringify(items),
       embeddata: JSON.stringify(embeddata),
-      // amount: transaction.price,
-      amount: 1000,
+      amount: transaction.price,
       description: `Payment for booking ${transaction.booking_reference}`,
       // bankcode: "zalopayapp",
     };
