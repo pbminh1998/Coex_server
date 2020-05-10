@@ -6,3 +6,4 @@ export * from './booking.controller';
 export * from './transaction.controller';
 export * from './point.controller';
 export * from './payment.controller';
+export * from './vnpay.controller';

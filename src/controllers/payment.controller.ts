@@ -84,12 +84,12 @@ export class PaymentController {
   ): Promise<AppResponse> {
     const transaction = await this.transactionRepository.findById(request.transaction_id);
 
-    if(await this.getBookingTransStatus(transaction))
+    // if(await this.getBookingTransStatus(transaction))
+    if(transaction.payment)
       throw new AppResponse(400,"This booking already payment");
 
     const embeddata = {
       redirecturl: "https://coexspace.herokuapp.com/payment/result",
-      callbackurl: "https://coexspace.herokuapp.com/payment/result",
       transaction_id: transaction.id
     };
 
@@ -102,9 +102,10 @@ export class PaymentController {
       apptime: Date.now(), // miliseconds
       item: JSON.stringify(items),
       embeddata: JSON.stringify(embeddata),
-      amount: transaction.price,
-      description: `Thanh toan booking ${transaction.booking_reference}`,
-      bankcode: "zalopayapp",
+      // amount: transaction.price,
+      amount: 1000,
+      description: `Payment for booking ${transaction.booking_reference}`,
+      // bankcode: "zalopayapp",
     };
 
     // appid|apptransid|appuser|amount|apptime|embeddata|item
@@ -134,7 +135,7 @@ export class PaymentController {
         'application/json': {
           schema: {
             type: 'object',
-            required: ['point'],
+            required: ['transaction_id'],
             properties: {
               transaction_id: { type: 'string' },
             },
@@ -184,15 +185,23 @@ export class PaymentController {
         },
       },
     }) callback_data: { data: string, mac: string }
-  ): Promise<object> {
-    const reqmac = CryptoJS.HmacSHA256(callback_data.data, config.key2).toString();
-    if (reqmac == callback_data.mac) {
-      const data = JSON.parse(callback_data.data);
-      await this.transactionRepository.updateById(data.embeddata.transaction_id,{payment: true});
-      return {returncode: 1, returnmessage:"success"};
-    } else {
-      return {returnCode: -1,returnmessage: "mac not equal"};
+  ): Promise<{}> {
+    let response = {returnCode: 0,returnmessage: ""};
+    try{
+      const reqmac = CryptoJS.HmacSHA256(callback_data.data, config.key2).toString();
+      if (reqmac == callback_data.mac) {
+        const data = JSON.parse(callback_data.data, config.key2 as any);
+        await this.transactionRepository.updateById(data.embeddata.transaction_id,{payment: true});
+        response.returnCode = 1;
+        response.returnmessage = "success";
+      } else {
+        response.returnCode = -1;
+        response.returnmessage = "mac not equal";
+      }
+    }catch(e){
+      response.returnmessage = e.message;
     }
+    return response;
   }
 
   @get('payment/result', {
@@ -214,24 +223,24 @@ export class PaymentController {
   }
 
   async getBookingTransStatus(transaction :any){
-    if(transaction.payment) return true;
-    const params: any = {
-      appid: config.appid,
-      apptransid: `${moment().format('YYMMDD')}_${transaction.booking_reference}`,
-    };
+    // if(transaction.payment) return true;
+    // const params: any = {
+    //   appid: config.appid,
+    //   apptransid: `${moment().format('YYMMDD')}_${transaction.booking_reference}`,
+    // };
 
-    // appid|apptransid|appuser|amount|apptime|embeddata|item
-    const data = config.appid+"|"+params.apptransid+"|"+config.key1;
-    params.mac = CryptoJS.HmacSHA256(data, config.key1).toString();
-    console.log(params);
-    const res = await Axios.get(config.checkReult, { params });
-    const response = res.data;
-    console.log(response);
-    if(response && response.returncode == 1){
-      transaction.payment = true;
-      this.transactionRepository.update(transaction);
-      return true;
-    }
+    // // appid|apptransid|appuser|amount|apptime|embeddata|item
+    // const data = config.appid+"|"+params.apptransid+"|"+config.key1;
+    // params.mac = CryptoJS.HmacSHA256(data, config.key1).toString();
+    // console.log(params);
+    // const res = await Axios.get(config.checkReult, { params });
+    // const response = res.data;
+    // console.log(response);
+    // if(response && response.returncode == 1){
+    //   transaction.payment = true;
+    //   this.transactionRepository.update(transaction);
+    //   return true;
+    // }
     return false;
   }
 }
