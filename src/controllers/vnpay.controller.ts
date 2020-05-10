@@ -96,7 +96,7 @@ export class VnpayController {
     vnp_Params['vnp_Locale'] = 'vn';
     vnp_Params['vnp_CurrCode'] = 'VND';
     vnp_Params['vnp_TxnRef'] = dateFormat(date, 'HHmmss') + '_' + transaction.id;
-    vnp_Params['vnp_OrderInfo'] = 'Thanh toan hoa don #'+transaction.booking_reference;
+    vnp_Params['vnp_OrderInfo'] = 'Thanh toan booking #'+transaction.booking_reference;
     vnp_Params['vnp_OrderType'] = 'billpayment';
     vnp_Params['vnp_Amount'] = transaction.price * 100;
     vnp_Params['vnp_ReturnUrl'] = returnUrl;
