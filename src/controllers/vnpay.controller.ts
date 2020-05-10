@@ -148,9 +148,9 @@ export class VnpayController {
     if(secureHash === checkSum){
       var rspCode = vnp_Params['vnp_ResponseCode'];
       if(rspCode == '00')
-        return 'Thanh toán thành công';
+        return 'Thanh toán thành công<br><a href="closeVnpay">Close</a>';
       else
-        return 'Thanh toán thất bại';
+        return 'Thanh toán thất bại<br><a href="closeVnpay">Close</a>';
     }
     else {
       return {RspCode: '97', Message: 'Fail checksum'};
