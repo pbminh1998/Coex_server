@@ -145,7 +145,7 @@ export class PaymentController {
   ): Promise<AppResponse> {
     const transaction = await this.transactionRepository.findById(request.transaction_id);
 
-    if(await this.getBookingTransStatus(transaction))
+    if(transaction.payment)
       return new AppResponse(200,"This booking already payment", {code: true,key: "PAYMENT_DONE"});
     else
       return new AppResponse(200,"This booking need payment",{code: false,key: "NEED_PAYMENT"});
@@ -203,25 +203,7 @@ export class PaymentController {
     return response;
   }
 
-  @get('payment/result', {
-    responses: {
-      '200': {
-        description: 'Room model instance',
-      },
-    },
-  })
-  async return(
-  ): Promise<any> {
-    // const reqmac = CryptoJS.HmacSHA256(callback_data.data, config.key2).toString();
-    // if (reqmac == callback_data.mac) {
-    //   console.log(JSON.parse(callback_data.data));
-    //   return {returnCode: 1,returnmessage: "success"};
-    // } else {
-    //   return {returnCode: -1,returnmessage: "mac not equal"};
-    // }
-  }
-
-  async getBookingTransStatus(transaction :any){
+  // async getBookingTransStatus(transaction :any){
     // if(transaction.payment) return true;
     // const params: any = {
     //   appid: config.appid,
@@ -240,6 +222,6 @@ export class PaymentController {
     //   this.transactionRepository.update(transaction);
     //   return true;
     // }
-    return false;
-  }
+    // return false;
+  // }
 }

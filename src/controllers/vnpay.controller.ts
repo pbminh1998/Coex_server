@@ -202,28 +202,6 @@ export class VnpayController {
     }
   }
 
-  async getBookingTransStatus(transaction :any){
-    // if(transaction.payment) return true;
-    // const params: any = {
-    //   appid: config.appid,
-    //   apptransid: `${moment().format('YYMMDD')}_${transaction.booking_reference}`,
-    // };
-
-    // // appid|apptransid|appuser|amount|apptime|embeddata|item
-    // const data = config.appid+"|"+params.apptransid+"|"+config.key1;
-    // params.mac = CryptoJS.HmacSHA256(data, config.key1).toString();
-    // console.log(params);
-    // const res = await Axios.get(config.checkReult, { params });
-    // const response = res.data;
-    // console.log(response);
-    // if(response && response.returncode == 1){
-    //   transaction.payment = true;
-    //   this.transactionRepository.update(transaction);
-    //   return true;
-    // }
-    return false;
-  }
-
   sortObject(o :any) {
     var sorted :any = {},
         key, a = [];
