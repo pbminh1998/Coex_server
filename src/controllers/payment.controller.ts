@@ -61,6 +61,12 @@ export class PaymentController {
 
   }
 
+
+  @authenticate('jwt')
+  @authorize({
+    allowedRoles: ['Customer'],
+    voters: [basicAuthorization],
+  })
   @post('/payment/create_payment_url', {
     responses: {
       '200': {
@@ -81,10 +87,13 @@ export class PaymentController {
           },
         },
       },
-    }) request: { transaction_id: string }
+    }) request: { transaction_id: string },
+    @inject(SecurityBindings.USER)
+    currentUserProfile: UserProfile,
   ): Promise<AppResponse> {
     const transaction = await this.transactionRepository.findById(request.transaction_id);
-
+    if(currentUserProfile[securityId] != transaction.userId)
+      throw new AppResponse(401,"Access denied!")
     // if(await this.getBookingTransStatus(transaction))
     if(transaction.payment)
       throw new AppResponse(400,"This booking already payment");
@@ -145,10 +154,14 @@ export class PaymentController {
           },
         },
       },
-    }) request: { transaction_id: string }
+    }) request: { transaction_id: string },
+    @inject(SecurityBindings.USER)
+    currentUserProfile: UserProfile,
   ): Promise<AppResponse> {
     const transaction = await this.transactionRepository.findById(request.transaction_id);
 
+    if(currentUserProfile[securityId] != transaction.userId)
+      throw new AppResponse(401,"Access denied!")
     if(transaction.payment)
       return new AppResponse(200,"This booking already payment", {code: true,key: "PAYMENT_DONE"});
     else

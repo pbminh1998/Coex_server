@@ -53,6 +53,8 @@ export class BookingController {
     public jwtService: TokenService
   ) { }
 
+
+  //Request giá booking
   @authenticate('jwt')
   @authorize({
     allowedRoles: ['Customer'],
@@ -70,12 +72,14 @@ export class BookingController {
     @inject(SecurityBindings.USER)
     currentUserProfile: UserProfile,
   ): Promise<AppResponse> {
+    //Kiểm tra booking hợp lệ
     let result = await (new ValidateBooking(this.bookingRepository, this.roomRepository)).checkCondition(createBooking, '');
     if (!result.status)
       throw new AppResponse(400, result.message);
     return new AppResponse(200, 'Booking success', { price: await getPrice(this.roomRepository, createBooking) });
   }
 
+  //Tạo booking mới
   @authenticate('jwt')
   @authorize({
     allowedRoles: ['Customer'],

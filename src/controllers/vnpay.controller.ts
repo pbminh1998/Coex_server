@@ -48,6 +48,11 @@ export class VnpayController {
 
   }
 
+  @authenticate('jwt')
+  @authorize({
+    allowedRoles: ['Customer'],
+    voters: [basicAuthorization],
+  })
   @post('vnpay/create_payment_url', {
     responses: {
       '200': {
@@ -68,9 +73,14 @@ export class VnpayController {
           },
         },
       },
-    }) request: { transaction_id: string }
+    }) request: { transaction_id: string },
+    @inject(SecurityBindings.USER)
+    currentUserProfile: UserProfile,
   ): Promise<AppResponse> {
     const transaction = await this.transactionRepository.findById(request.transaction_id);
+
+    if(currentUserProfile[securityId] != transaction.userId)
+      throw new AppResponse(401,"Access denied!")
 
     if(transaction.payment)
       throw new AppResponse(400,"This booking already payment");
