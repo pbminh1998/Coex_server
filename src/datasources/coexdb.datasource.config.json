@@ -2,10 +2,10 @@
   "name": "coexdb",
   "connector": "mongodb",
   "url": "",
-  "host": "ds036789.mlab.com",
-  "port": 36789,
-  "user": "root",
-  "password": "abc13579",
+  "host": "localhost",
+  "port": 27017,
+  "user": "",
+  "password": "",
   "database": "coex",
   "useNewUrlParser": true
 }
