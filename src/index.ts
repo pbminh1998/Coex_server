@@ -33,5 +33,11 @@ export async function main(options: ApplicationConfig = {
   console.log(`Server is running at ${url}`);
   console.log(`Try ${url}/ping`);
 
+  const ngrok = require('ngrok');
+  (async function() {
+    const url = await ngrok.connect(3000);
+    console.log(url);
+  })();
+
   return app;
 }

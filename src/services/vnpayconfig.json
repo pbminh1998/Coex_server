@@ -1,6 +1,6 @@
 {
   "vnp_TmnCode":"39OI4MZJ",
-  "vnp_HashSecret":"AJSI91F5TKRIJHR46TC40KHJMG6AGALD",
+  "vnp_HashSecret":"TTBRUVADBNIYNVWITGOPQTARRSDSPLNU",
   "vnp_Url":"http://sandbox.vnpayment.vn/paymentv2/vpcpay.html",
-  "vnp_ReturnUrl": "https://testzalopay.herokuapp.com/vnpay/return"
+  "vnp_ReturnUrl": "http://34.87.108.104:3000/vnpay/return"
 }
