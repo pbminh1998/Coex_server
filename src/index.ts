@@ -35,7 +35,7 @@ export async function main(options: ApplicationConfig = {
 
   const ngrok = require('ngrok');
   (async function() {
-    const url = await ngrok.connect(3000);
+    const url = await ngrok.connect({addr: 3000,authtoken: '1bwXFK8ikHJbM6SNaKlNi1koTIb_6wag3nigQKLEfSwjSuaCc'});
     console.log(url);
   })();
 
