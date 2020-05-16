@@ -107,7 +107,7 @@ export class VnpayController {
     vnp_Params['vnp_Command'] = 'pay';
     vnp_Params['vnp_TmnCode'] = tmnCode;
     // vnp_Params['vnp_Merchant'] = ''
-    vnp_Params['vnp_Locale'] = 'vn';
+    vnp_Params['vnp_Locale'] = 'en';
     vnp_Params['vnp_CurrCode'] = 'VND';
     vnp_Params['vnp_TxnRef'] = dateFormat(date, 'HHmmss') + '_' + transaction.id;
     vnp_Params['vnp_OrderInfo'] = 'Thanh toan booking #'+transaction.booking_reference;
