@@ -177,7 +177,7 @@ export class PaymentController {
             schema: {
               type: 'object',
               properties: {
-                returncode: {type: 'int'},
+                returncode: {type: 'number'},
                 returnmessage: {type: 'string'},
               },
             },
