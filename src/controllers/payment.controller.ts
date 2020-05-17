@@ -202,16 +202,16 @@ export class PaymentController {
       },
     }) callback_data: { data: string, mac: string }
   ): Promise<{}> {
-    let response = {returnCode: 0,returnmessage: ""};
+    let response = {returncode: 0,returnmessage: ""};
     try{
       const reqmac = CryptoJS.HmacSHA256(callback_data.data, config.key2).toString();
       if (reqmac == callback_data.mac) {
         const data = JSON.parse(callback_data.data, config.key2 as any);
         await this.transactionRepository.updateById(data.embeddata.transaction_id,{payment: true});
-        response.returnCode = 1;
+        response.returncode = 1;
         response.returnmessage = "success";
       } else {
-        response.returnCode = -1;
+        response.returncode = -1;
         response.returnmessage = "mac not equal";
       }
     }catch(e){
