@@ -202,7 +202,7 @@ export class VnpayController {
         const transaction_id = vnp_Params['vnp_TxnRef'].split("_")[1];
         var rspCode = vnp_Params['vnp_ResponseCode'];
         if(rspCode == '00' && transaction_id != undefined){
-          this.transactionRepository.updateById(transaction_id,{payment: true});
+          await this.transactionRepository.updateById(transaction_id,{payment: true});
         }
         //Kiem tra du lieu co hop le khong, cap nhat trang thai don hang va gui ket qua cho VNPAY theo dinh dang duoi
         return {RspCode: '00', Message: 'success'};

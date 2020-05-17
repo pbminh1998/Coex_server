@@ -126,7 +126,7 @@ export class PaymentController {
 
 
     const res = await Axios.post(config.endpoint, null, { params: order });
-    return new AppResponse(200,"abc",res.data);
+    return new AppResponse(200,"Success",res.data);
   }
 
   @authenticate('jwt')
