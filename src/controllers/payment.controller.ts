@@ -102,7 +102,7 @@ export class PaymentController {
       throw new AppResponse(400,"This booking cannot payment");
 
     const embeddata = {
-      redirecturl: "https://coexspace.herokuapp.com/payment/result",
+      redirecturl: "http://34.87.108.104:3000/payment/result",
       transaction_id: transaction.id
     };
 
