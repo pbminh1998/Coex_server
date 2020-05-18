@@ -164,7 +164,6 @@ export class TransactionController {
     response.status = transaction.status;
     response.booking_reference = transaction.booking_reference;
     response.payment = transaction.payment;
-    console.log(response.payment);
     if (!transaction.check_in)
       response.key = 'CHECK_IN';
     else if (!transaction.check_out)
