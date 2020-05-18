@@ -142,7 +142,8 @@ export class TransactionController {
       roomName: '',
       status: '',
       key: '',
-      booking_reference: ''
+      booking_reference: '',
+      payment: false
     }
     const transaction = await this.transactionRepository.findById(id, { include: [{ relation: 'bookings' }, { relation: 'room', scope: { include: [{ relation: 'coworking', scope: { include: [{ relation: 'user' }] } }] } }, { relation: 'user' }] });
     if (currentUserProfile[securityId] != transaction.userId && currentUserProfile[securityId] != transaction.room?.coworking?.userId)
@@ -162,6 +163,7 @@ export class TransactionController {
     response.duration = (end_date.getTime() - start_date.getTime()) / 3600000;
     response.status = transaction.status;
     response.booking_reference = transaction.booking_reference;
+    response.payment = transaction.payment;
     if (!transaction.check_in)
       response.key = 'CHECK_IN';
     else if (!transaction.check_out)

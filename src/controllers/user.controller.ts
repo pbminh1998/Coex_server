@@ -185,9 +185,9 @@ export class UserController {
     await this.userRepository.replaceById(user.id, user);
 
     //Mail
-    // await resetPassword(user.email, password);
+    await resetPassword(user.email, password);
 
-    return new AppResponse(200, 'A new password was sent via email, plase check your email!', { password });
+    return new AppResponse(200, 'A new password was sent via email, plase check your email!',);
   }
 
 
